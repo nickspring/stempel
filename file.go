@@ -15,6 +15,8 @@
 package stempel
 
 import (
+	"bytes"
+	"io"
 	"os"
 	"strings"
 
@@ -34,6 +36,17 @@ func Open(path string) (Trie, error) {
 		return nil, err
 	}
 
+	return buildTrieFromReader(f)
+}
+
+// LoadFromBytes attempts to load bytes and use it to
+// build a Trie
+func LoadFromBytes(data []byte) (Trie, error) {
+	return buildTrieFromReader(bytes.NewReader(data))
+}
+
+// buildTrieFromReader build trie from io.Reader
+func buildTrieFromReader(f io.Reader) (Trie, error) {
 	r := javadata.NewReader(f)
 	method, err := r.ReadUTF()
 	if err != nil {
